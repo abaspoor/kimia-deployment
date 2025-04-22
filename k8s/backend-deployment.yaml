@@ -17,6 +17,13 @@ spec:
           image: abaspoor/kimia-backend:latest
           ports:
             - containerPort: 8080
+          env:
+            - name: SPRING_DATASOURCE_URL
+              value: jdbc:postgresql://postgres:5432/FootprintDB
+            - name: SPRING_DATASOURCE_USERNAME
+              value: postgres
+            - name: SPRING_DATASOURCE_PASSWORD
+              value: password
 ---
 apiVersion: v1
 kind: Service

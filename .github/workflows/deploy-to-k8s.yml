@@ -3,25 +3,34 @@ name: Deploy to Kubernetes
 on:
   push:
     branches:
-      - master # یا هر برنچی که برای دیپلوی استفاده می‌کنی
+      - master  # برنچی که مخصوص دیپلویه
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: ⬇️ Checkout code
         uses: actions/checkout@v3
 
-      - name: Set up kubectl
+      - name: ⚙️ Set up kubectl
         uses: azure/setup-kubectl@v3
         with:
           version: 'latest'
 
-      - name: Set up Kubeconfig
+      - name: 📂 Set up Kubeconfig
         run: |
           mkdir -p $HOME/.kube
           echo "${{ secrets.KUBECONFIG }}" > $HOME/.kube/config
 
-      - name: Apply Kubernetes manifests
-        run: kubectl apply -f k8s/
+      - name: ✅ Test connection to cluster
+        run: kubectl get nodes
+
+      - name: 🚀 Apply Kubernetes manifests
+        run: |
+          if [ -d "k8s" ]; then
+            kubectl apply -f k8s/
+          else
+            echo "❌ No k8s/ directory found!"
+            exit 1
+          fi
